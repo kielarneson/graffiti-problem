@@ -15,6 +15,10 @@ def graffiti
     ward = graffiti["ward"]
     needed_graffiti_data << { :year => year, :month => month, :ward => ward }
   end
+
+  # Alderman web request
+  response = HTTP.get("https://data.cityofchicago.org/resource/htai-wnw4.json")
+  all_alderman_data = JSON.parse(response.body)
 end
 
 pp graffiti()
