@@ -1,6 +1,6 @@
 require "http"
 
-def graffiti
+def graffiti(alderman)
   # Graffiti web request
   response = HTTP.get("https://data.cityofchicago.org/resource/hec5-y4x5.json")
   all_graffiti_data = JSON.parse(response.body)
@@ -19,6 +19,8 @@ def graffiti
   # Alderman web request
   response = HTTP.get("https://data.cityofchicago.org/resource/htai-wnw4.json")
   all_alderman_data = JSON.parse(response.body)
+
+  # pp all_alderman_data
 
   needed_alderman_data = []
 
@@ -40,7 +42,7 @@ def graffiti
     end
 
     # Getting the first name
-    index = split_alderman.length
+    index = split_alderman.length - 1
     first_name = []
     while index > 0
       if split_alderman[index] == ","
@@ -52,7 +54,7 @@ def graffiti
     end
 
     # Putting first name and last name together to create full name
-    full_name = "#{first_name.reverse.join} #{last_name.join}"
+    full_name = "#{first_name.slice(0..-2).reverse.join} #{last_name.join}"
 
     # Passing needed alderman info into array as a hash for each Alderman
     needed_alderman_data << { :ward => alderman["ward"], :name => full_name }
@@ -77,8 +79,12 @@ def graffiti
     index1 += 1
     index2 = 0
   end
-  # Displaying final array of hashes
-  return all_data
+
+  # Displaying final data for specific alderman
+  specific_data = all_data.select { |specific_alderman| specific_alderman[:alderman] == alderman }
+  specific_data[0][:removal_requests] = specific_data.length
+
+  p specific_data[0]
 end
 
-pp graffiti()
+graffiti("Patrick D. Thompson")
