@@ -19,6 +19,44 @@ def graffiti
   # Alderman web request
   response = HTTP.get("https://data.cityofchicago.org/resource/htai-wnw4.json")
   all_alderman_data = JSON.parse(response.body)
+
+  needed_alderman_data = []
+
+  # Getting relevant alderman data
+  all_alderman_data.each do |alderman|
+    each_alderman = alderman["alderman"]
+    split_alderman = each_alderman.split("")
+
+    # Getting the last name
+    index = 0
+    last_name = []
+    while index < split_alderman.length
+      if split_alderman[index] == ","
+        break
+      else
+        last_name << split_alderman[index]
+      end
+      index += 1
+    end
+
+    # Getting the first name
+    index = split_alderman.length
+    first_name = []
+    while index > 0
+      if split_alderman[index] == ","
+        break
+      else
+        first_name << split_alderman[index]
+      end
+      index -= 1
+    end
+
+    # Putting first name and last name together to create full name
+    full_name = "#{first_name.reverse.join} #{last_name.join}"
+
+    # Passing needed alderman info into array as a hash for each Alderman
+    needed_alderman_data << { :ward => alderman["ward"], :name => full_name }
+  end
 end
 
 pp graffiti()
