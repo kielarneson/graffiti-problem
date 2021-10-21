@@ -57,6 +57,28 @@ def graffiti
     # Passing needed alderman info into array as a hash for each Alderman
     needed_alderman_data << { :ward => alderman["ward"], :name => full_name }
   end
+
+  # Adding Graffiti data and Alderman data together if they have the same ward
+  all_data = []
+  index1 = 0
+  index2 = 0
+  while index1 < needed_graffiti_data.length
+    while index2 < needed_alderman_data.length
+      if needed_graffiti_data[index1][:ward] == needed_alderman_data[index2][:ward]
+        all_data << {
+          :ward => needed_alderman_data[index2][:ward],
+          :alderman => needed_alderman_data[index2][:name],
+          :month => needed_graffiti_data[index1][:month],
+          :year => needed_graffiti_data[index1][:year],
+        }
+      end
+      index2 += 1
+    end
+    index1 += 1
+    index2 = 0
+  end
+  # Displaying final array of hashes
+  return all_data
 end
 
 pp graffiti()
